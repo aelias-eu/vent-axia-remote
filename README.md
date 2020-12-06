@@ -23,14 +23,14 @@ As first, we need to know the voltage levels used in this system. After oscillos
 ![voltage levels](/img/green_line_voltage.jpeg)
 
 Next, we can try to measure the baudrate - or to be more spectfic, the signal period length of shortest signal in the packet.
-![Bit period](/img/bit_period.jpeg)
+![bit period](/img/bit_period.jpeg)
 
 I like to measure the period of two signal bits and then divide it by two (just to get lesser reading error), but if you measure just one signal period, you will be fine in most cases. In this case, we have 0.208ms for two bits, that makes (divided by 2) 0.104ms == 104us (microseconds) for 1 data bit. You can look at the commond serial port speeds (https://en.wikipedia.org/wiki/Serial_port#Settings) and find out that 104us bitrate coresponds to the 9600 bits/s bitrate.
 So - it looks like the **bitrate on this device is 9600bps**. 
 But that's not all we need to know to succesfully communicate. We also need to know the data bit count, stop bits and parity bits. The most common setting is 8N1 - 8 data bits, no parity bit, 1 stop bit.
 
-![Bit period](/img/packet_width.jpeg)
-The packet length is 44.1ms, that makes (44.1/0.104) 424,0384 -> 424 bits in one packet
+![packet width](/img/packet_width.jpeg)
+The packet length is 44.1ms, that makes (44.1/0.104) 424.0384 -> 424 bits in one packet
 The baudrate seems to be 9600bps
 
 
