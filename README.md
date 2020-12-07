@@ -30,6 +30,7 @@ So - it looks like the **bitrate on this device is 9600bps**.
 But that's not all we need to know to succesfully communicate. We also need to know the data bit count, stop bits and parity bits. The most common setting is 8N1 - 8 data bits, no parity bit, 1 stop bit.
 
 ![packet width](/img/packet_width.jpeg)
+
 The packet length is 44.1ms, that makes (44.1/0.104) 424.0384 -> 424 bits in one packet
 The baudrate seems to be 9600bps
 
