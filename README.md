@@ -38,7 +38,7 @@ If we assume the 10 bits for 8N1 configuration, we get the number 424/10 = 42.4 
 Aftwr connecting a full-duplex [RS232 sniffing cable](https://www.lammertbies.nl/comm/cable/rs-232-spy-monitor) and selecting parameters **96008N1** I finally saw the data and...
 ...this is a bit awkward - but I can't say that I didn't expect this when I found out, that this is a plain RS232 link. And the result is:
 
-The wired remote is sort-of a dumb serial connected display/keyboard. That means - it shows on the LCD diplay exactly what it receives.
+The wired remote is sort-of a dumb serial connected display/keyboard. That means - it shows on the LCD diplay exactly what it receives. And why did I think of this before? Because of the language support - it's easier to maintain and upgrade just one device - in this case the MVHR main control board. If the manufacturer adds language suppoort there, he doesn't need to do anything with wired or wireless remotes as long as the firmware change does not change the wired remote communication protocol.  
 
 The LCD display is 2 lines of 16 characters
 For example the packet is (everything is HEX data):
@@ -66,7 +66,7 @@ and packet end - maybe some sort of CRC
 `F7 D8`
 
 If you try to decode the data into ASCII, you will get **"Stredni Prutok  "** for the first line and **"35 %            "** for the second line. 
-It may look gibberish to you, but it means "Middle flow" in Czech language.
+It may look gibberish to you, but it means "Middle flow" in Czech language, I suppose I don't have to translate the 35% :)
 
 So it won't be hard to recreate a virtual keypad via ESP32, but I have to say, I was looking forward to analyze & break a bit more sophisticated communication protocol... But hey - at least creating a multi-drop connection from this standard RS232 could be a bit challenge. Why? Because we have to solve control command sending and I'd like to make it collision free.  
 
@@ -80,11 +80,18 @@ The keys are sent as much smaller packets (8 byte):
 I forgot to sniff the packets when you press key combinations, so I have to do it later.
 
 
-## ToDo:
+## To Do:
 - [x] Detect RS232 connection parameters (baudrate, databits, parity, stop bits)
 - [x] Connect dual serial port interface via listener and start data monitoring 
-- 
+- [ ] Sniff data for key combinations and chech for changes for long-pressed buttons
+- [ ] Implement virtual keypad with ESP32 with interface to MQTT
+
+## Possible future usage
+- Create virtual keypad on the phone or webinterface
+- Integrate MVHR unit into any smart-home solution
+
+
 # Used tools
 - Serial port terminal program - in my case [hterm](http://der-hammer.info/pages/terminal.html)
 - Oscilloscope - in my case a DSO (Digital Signal Oscilloscope)
-- Serial port sniffing splitter
+- Serial port sniffing cable - you can find the connection& explanation here https://www.lammertbies.nl/comm/cable/rs-232-spy-monitor
