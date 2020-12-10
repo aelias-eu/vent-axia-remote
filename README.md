@@ -34,11 +34,56 @@ But that's not all we need to know to succesfully communicate. We also need to k
 The packet length is 44.1ms, that makes (44.1/0.104) 424.0384 -> 424 bits in one packet. These bit are not just the data bits, but also the bits, required for succesfull [USART/UART](https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter) communication - the start bit, optional parity bit and stop bit(s). So to transmit 8 bits of our data, we have to send at least one start bit, 8 bits of our data and the stop bit. That makes 10bits (or 11 if we are using the parity bit). 
 If we assume the 10 bits for 8N1 configuration, we get the number 424/10 = 42.4 - that's 42 Bytes in one packet. And the MVHR unit is sending a packet every 300ms, so theoretically, we get 126 bytes of data every second - and that could be a lot of informations or not - we will see more after connecting to the computer and looking at the data.
 
+# The data
+Aftwr connecting a full-duplex [RS232 sniffing cable](https://www.lammertbies.nl/comm/cable/rs-232-spy-monitor) and selecting parameters **96008N1** I finally saw the data and...
+...this is a bit awkward - but I can't say that I didn't expect this when I found out, that this is a plain RS232 link. And the result is:
+
+The wired remote is sort-of a dumb serial connected display/keyboard. That means - it shows on the LCD diplay exactly what it receives.
+
+The LCD display is 2 lines of 16 characters
+For example the packet is (everything is HEX data):
+
+`02 00 00 08 07 15 53 74 72 65 64 6E 69 20 50 72 75 74 6F 6B 20 20 16 33 35 20 25 20 20 20 20 20 20 20 20 20 20 20 20 F7 D8`
+
+where the first 6 bytes look like a header:
+
+`02 00 00 08 07 15` 
+
+then there is the main data for the first display line:
+
+`53 74 72 65 64 6E 69 20 50 72 75 74 6F 6B 20 20`
+
+folowed by new line character 
+
+`16` 
+
+then there is the main data for the first display line:
+
+`33 35 20 25 20 20 20 20 20 20 20 20 20 20 20 20`
+
+and packet end - maybe some sort of CRC
+
+`F7 D8`
+
+If you try to decode the data into ASCII, you will get **"Stredni Prutok  "** for the first line and **"35 %            "** for the second line. 
+It may look gibberish to you, but it means "Middle flow" in Czech language.
+
+So it won't be hard to recreate a virtual keypad via ESP32, but I have to say, I was looking forward to analyze & break a bit more sophisticated communication protocol... But hey - at least creating a multi-drop connection from this standard RS232 could be a bit challenge. Why? Because we have to solve control command sending and I'd like to make it collision free.  
+
+There are 4 keys on the keypad and by pressing a button, the keypad will send set of repeated packets with short delay between packets (18-20ms). If you hold the button longer, the keypad will just keep sending the apropriate packet.
+The keys are sent as much smaller packets (8 byte):
+- `04 05 AF EF FB 08 FD 55` - Main button (ventilator icon)
+- `04 05 AF EF FB 01 FD 5C` - Down button
+- `04 05 AF EF FB 02 FD 5B` - Up button
+- `04 05 AF EF FB 04 FD 59` - SET button
+
+I forgot to sniff the packets when you press key combinations, so I have to do it later.
+
 
 ## ToDo:
-- [ ] Detect RS232 connection parameters (baudrate, databits, parity, stop bits)
-- [ ] Connect dual serial port interface via listener and start data monitoring 
-
+- [x] Detect RS232 connection parameters (baudrate, databits, parity, stop bits)
+- [x] Connect dual serial port interface via listener and start data monitoring 
+- 
 # Used tools
 - Serial port terminal program - in my case [hterm](http://der-hammer.info/pages/terminal.html)
 - Oscilloscope - in my case a DSO (Digital Signal Oscilloscope)
