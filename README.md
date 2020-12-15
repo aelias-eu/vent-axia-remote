@@ -83,7 +83,7 @@ I forgot to sniff the packets when you press key combinations, so I have to do i
 ## To Do:
 - [x] Detect RS232 connection parameters (baudrate, databits, parity, stop bits)
 - [x] Connect dual serial port interface via listener and start data monitoring 
-- [ ] Sniff data for key combinations and chech for changes for long-pressed buttons
+- [ ] Sniff data for key combinations and check for changes for long-pressed buttons
 - [ ] Implement virtual keypad with ESP32 with interface to MQTT
 
 ## Possible future usage
