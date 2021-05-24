@@ -95,3 +95,6 @@ I forgot to sniff the packets when you press key combinations, so I have to do i
 - Serial port terminal program - in my case [hterm](http://der-hammer.info/pages/terminal.html)
 - Oscilloscope - in my case a DSO (Digital Signal Oscilloscope)
 - Serial port sniffing cable - you can find the connection& explanation here https://www.lammertbies.nl/comm/cable/rs-232-spy-monitor
+
+# Links & Other projects
+ - [vent-axia-remote-oled-pic] (https://github.com/brianmarchant/vent-axia-remote-oled-pic) - @brianmarchant did some nice work on the custom firware
