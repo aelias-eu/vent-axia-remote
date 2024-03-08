@@ -22,7 +22,7 @@ The wired remote is based on Microchip's [PIC16F627A](https://www.microchip.com/
 According to this, the MVHR unit uses standard RS232 voltage range (**Not TTL - so don't connect it directly to any MCU!!!**). 
 
 # Oscilloscope measurements & bus parameters identification
-As first, we will check the voltage levels used in this system. After oscilloscope connection to the green line, we can see the data packets and that these voltage levels ale ± 8.8V. ±9V is typical Transpitter output voltage for the RS232 driver 202ECBZ.
+As first, we will check the voltage levels used in this system. After oscilloscope connection to the green line, we can see the data packets and that these voltage levels ale ± 8.8V. According the datasheet, the ±9V is typical Transmitter output voltage for the RS232 driver 202ECBZ.
 ![voltage levels](/img/green_line_voltage.jpeg)
 
 Next, we can try to measure the baudrate - or to be more spectfic, the signal period length of shortest signal in the packet.
