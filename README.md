@@ -1,5 +1,6 @@
 # Vent-Axia Wired Remote Protocol
 Vent-Axia [wired remote](https://www.vent-axia.com/product/sentinel-kinetic-wired-remote-controller) protocol reverse engineering.
+
 ![442899](/img/wired-remote.jpeg)
 
 ## My setup
@@ -80,13 +81,22 @@ The keys are sent as much smaller packets (8 byte):
 - `04 05 AF EF FB 02 FD 5B` - Up button
 - `04 05 AF EF FB 04 FD 59` - SET button
 
-I forgot to sniff the packets when you press key combinations, so I have to do it later.
+The main change is on the 6th byte (01 / 02 / 04 / 08) and the last (CRC). Key combinations are just a simple add operation on the 6th byte and of course the CRC change.
+
+- `04 05 AF EF FB 09 FD 54` - Main + Down
+- `04 05 AF EF FB 0A FD 53` - Main + Up
+- `04 05 AF EF FB 0C FD 51` - Main + SET
+- `04 05 AF EF FB 03 FD 5A` - Down + Up
+- `04 05 AF EF FB 05 FD 58` - Down + SET
+- `04 05 AF EF FB 06 FD 57` - Up + SET
+
+Nothing changes if the key / key combination is pressed for a long time (5s and more). 
 
 
 ## To Do:
 - [x] Detect RS232 connection parameters (baudrate, databits, parity, stop bits)
 - [x] Connect dual serial port interface via listener and start data monitoring 
-- [ ] Sniff data for key combinations and check for changes for long-pressed buttons
+- [x] Sniff data for key combinations and check for changes for long-pressed buttons
 - [ ] Implement virtual keypad with ESP32 with interface to MQTT
 
 ## Possible future usage
@@ -101,3 +111,5 @@ I forgot to sniff the packets when you press key combinations, so I have to do i
 
 # Links & Other projects
  - [vent-axia-remote-oled-pic](https://github.com/brianmarchant/vent-axia-remote-oled-pic) - @brianmarchant did some nice work on the custom firmware
+ - [ESP8266-Sentinel-Kinetic-Wired-Remote](https://github.com/alextrical/ESP8266-Sentinel-Kinetic-Wired-Remote) - Completely custom build keyboard with ESP8266, including 3d printed case by @alextrical
+ - [vent-axia-bridge](https://github.com/ryancdotorg/vent-axia-bridge) - @ryancdotorg created an ESP8266 based controller via the BMS port.
