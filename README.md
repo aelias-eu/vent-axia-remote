@@ -6,8 +6,9 @@ Vent-Axia [wired remote](https://www.vent-axia.com/product/sentinel-kinetic-wire
 ## My setup
 The wired remote (item #442899) is connected to the [Sentinel Kinetic B](https://www.vent-axia.com/range/lo-carbon-sentinel-kinetic-b) MVHR (Mechanical ventilation with heat recovery) unit.
 
-There is a RJ45 connector on the MVHR unit and 4 free wires on the other side, connected to the Wired remote via screw terminals
+There is a ?RJ11? connector on the MVHR unit and 4 free wires on the other side, connected to the Wired remote via screw terminals
 ![connection](/img/connection.png)
+![connection_at_main_unit](/img/vent-axia-kbd-rj11.jpg)
 
 Terminal & wire colors are:
 
