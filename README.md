@@ -6,9 +6,9 @@ Vent-Axia [wired remote](https://www.vent-axia.com/product/sentinel-kinetic-wire
 ## My setup
 The wired remote (item #442899) is connected to the [Sentinel Kinetic B](https://www.vent-axia.com/range/lo-carbon-sentinel-kinetic-b) MVHR (Mechanical ventilation with heat recovery) unit.
 
-There is a ?RJ11? connector on the MVHR unit and 4 free wires on the other side, connected to the Wired remote via screw terminals
-![connection](/img/connection.png)
+There is a ?RJ11(6p4c) or RJ9(4p4c)? connector (photo follows) on the MVHR unit and 4 free wires on the other side, connected to the Wired remote via screw terminals
 ![connection_at_main_unit](/img/vent-axia-kbd-rj11.jpg)
+![connection](/img/connection.png)
 
 Terminal & wire colors are:
 
@@ -21,7 +21,7 @@ Terminal & wire colors are:
 
 The wired remote is based on Microchip's [PIC16F627A](https://www.microchip.com/wwwproducts/en/PIC16F627A) and connection interface IC is the [202ECBZ](https://pdf1.alldatasheet.com/datasheet-pdf/view/532554/INTERSIL/202ECBZ.html). The connection interface IC on the PCB is marked as *U1*. Red and green terminals are connected to the U1 pins 14 and 13 via inductors L3,L2, and resistors R2 and R1 with filtration capacitors C2,C3. Looking at the specs of the RS232 driver (202ECBZ), we can see, that the maximum Transmitter output voltage is ± 10V.
 
-According to this, the MVHR unit uses standard RS232 voltage range (**Not TTL - so don't connect it directly to any MCU!!!**). 
+According to this, the MVHR unit uses standard RS232 voltage levels (**Not TTL - so don't connect it directly to any MCU!!!**). 
 
 # Oscilloscope measurements & bus parameters identification
 As first, we will check the voltage levels used in this system. After oscilloscope connection to the green line, we can see the data packets and that these voltage levels ale ± 8.8V. According the datasheet, the ±9V is typical Transmitter output voltage for the RS232 driver 202ECBZ.
