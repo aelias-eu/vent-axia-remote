@@ -92,8 +92,8 @@ The main change is on the 6th byte (01 / 02 / 04 / 08) and the last (CRC). Key c
 
 Nothing changes if the key / key combination is pressed for a long time (5s and more). 
 
-## CRC calculation
-The CRC is essentially what you get by subtracting all byte values from 0xFFFF (as seen in [vent-axia-bridge](https://github.com/ryancdotorg/vent-axia-bridge) by @ryancdotorg.
+## VentAxia CRC calculation
+The CRC in this case is essentially what you get by subtracting all byte values from 0xFFFF (as seen in [vent-axia-bridge](https://github.com/ryancdotorg/vent-axia-bridge) by @ryancdotorg.
 
 Here is PoC code in arduino compatible code. You can simulate it on wokwi.com or try it here: [vent-axia-kbd-protocol@wokwi](https://wokwi.com/projects/430088578742810625)
 It just writes the HEX representation of generated packets to the serial console.
