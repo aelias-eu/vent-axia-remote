@@ -65,7 +65,7 @@ then there is the main data for the first display line:
 
 `33 35 20 25 20 20 20 20 20 20 20 20 20 20 20 20`
 
-and packet end - maybe some sort of CRC
+and packet end - is the CRC
 
 `F7 D8`
 
@@ -92,6 +92,132 @@ The main change is on the 6th byte (01 / 02 / 04 / 08) and the last (CRC). Key c
 
 Nothing changes if the key / key combination is pressed for a long time (5s and more). 
 
+## CRC calculation
+The CRC is basically the resul of substraction of all byte values from 0xFFFF (as seen in [vent-axia-bridge](https://github.com/ryancdotorg/vent-axia-bridge) by @ryancdotorg.
+
+Here is PoC code in arduino compatible code. You can simulate it on wokwi.com or try it here: [vent-axia-kbd-protocol@wokwi](https://wokwi.com/projects/430088578742810625)
+It just writes the HEX representation of generated packets to the serial console.
+```cpp
+#define VA_PACKET_MAX_SIZE 42
+
+#define VA_KEY_DOWN   1
+#define VA_KEY_UP     2
+#define VA_KEY_SER    4
+#define VA_KEY_BOOST  8
+
+uint8_t outBuff[VA_PACKET_MAX_SIZE];  // output buffer
+uint8_t outSize=0;                    // output data size
+String  outLine1;
+String  outLine2;
+
+/* function: printBuffer
+*  - Print HEX data representation of the buffer content
+*/
+void printBuffer(uint8_t buffer[], uint8_t buffSize) {
+  if (buffSize > 0) {
+    for (int i=0; i<buffSize; i++) {
+      if (buffer[i]<16) { Serial.print('0'); }  // add leading "0" if needed
+      Serial.print(buffer[i],HEX);
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+}
+
+/* function: VentAxiaSendLcdText
+*  - Generate packet for showing message on LCD display with correct CRC 
+*/
+void VentAxiaSendLcdText(String Line1, String Line2, uint8_t buffer[], uint8_t* buffSize) {
+  *buffSize=39;
+  buffer[0]=0x02;
+  buffer[1]=0x00;
+  buffer[2]=0x00;
+  buffer[3]=0x0c;
+  buffer[4]=0x07;
+  buffer[5]=0x15;
+  for (int i=0; i<16; i++) { 
+    if (Line1.length() >= i+1){
+      buffer[6+i]=Line1.charAt(i);
+    }
+    else {
+      buffer[6+i]=0x20; 
+    }
+  } 
+  buffer[22]=0x16;
+  for (int i=0; i<16; i++) { 
+    if (Line1.length() >= i+1){
+      buffer[23+i]=Line1.charAt(i);
+    }
+    else {
+      buffer[23+i]=0x20; 
+    }
+  } 
+  uint16_t crc=VentAxiaCrcCalc(buffer, *buffSize); // calculate & attach CRC
+  buffer[39] = crc >> 8;
+  buffer[40] = crc & 255;
+  *buffSize=41;
+}
+
+/* function: VentAxiaSendKeyPress 
+*  - Generate keyboard press packet with correct CRC 
+*/
+void VentAxiaSendKeyPress(uint8_t key, uint8_t buffer[], uint8_t* buffSize) {
+  // KeyPress Packet: 04 05 AF EF FB [KEY_CODE] [CRC_BYTE1] [CRC_BYTE2]
+  // Orther version:  04 06 FF FF FF [KEY_CODE] [CRC_BYTE1] [CRC_BYTE2]
+  buffer[0]=0x04;
+  buffer[1]=0x05;
+  buffer[2]=0xAF;
+  buffer[3]=0xEF;
+  buffer[4]=0xFB;
+  buffer[5]=key;
+  *buffSize = 6;
+  uint16_t crc=VentAxiaCrcCalc(buffer, *buffSize); // calculate & attach CRC
+  buffer[6] = crc >> 8;
+  buffer[7] = crc & 255;
+  *buffSize = 8;
+}
+
+/* function: VentAxiaCrcCalc 
+*  - Calculate CRC for VentAxia packets
+*/
+uint16_t VentAxiaCrcCalc(uint8_t buffer[], uint8_t buffSize) {
+  if ((buffSize > 0) && (buffSize+2 <= VA_PACKET_MAX_SIZE)) {
+    uint16_t crc = 0xFFFF;
+    for (int i=0; i<buffSize; i++) {
+      crc -= buffer[i];
+    }
+    return crc;
+  }
+  else {
+    return 0x0000;
+  }
+}  
+
+void SendSerial(uint8_t buffer[], uint8_t buffSize) {
+   
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  // Send max. 16 characters per line. Will be stripped down automatically
+  outLine1="Text Message L1 "; 
+  outLine2="Text Message L2";
+  VentAxiaSendLcdText(outLine1, outLine2, outBuff, &outSize);
+  Serial.println("LCD Message:");
+  printBuffer(outBuff, outSize);
+  delay(10000);
+  for (uint8_t i=0; i<255; i++){
+    Serial.print("key_code: ");
+    Serial.println(i);
+    VentAxiaSendKeyPress(i, outBuff, &outSize);
+    printBuffer(outBuff, outSize);
+  }
+}
+
+void loop() {
+}
+```
 
 ## To Do:
 - [x] Detect RS232 connection parameters (baudrate, databits, parity, stop bits)
@@ -103,11 +229,11 @@ Nothing changes if the key / key combination is pressed for a long time (5s and 
 - Create virtual keypad on the phone or webinterface
 - Integrate MVHR unit into any smart-home solution
 
-
 # Used tools
-- Serial port terminal program - in my case [hterm](http://der-hammer.info/pages/terminal.html)
+- Serial port terminal program - in my case [hterm](http://der-hammer.info/pages/terminal.html) - set approx. 10ms timeout for packet separation
 - Oscilloscope - in my case a DSO (Digital Signal Oscilloscope)
-- Serial port sniffing cable - you can find the connection & explanation [here](https://www.lammertbies.nl/comm/cable/rs-232-spy-monitor)
+- Full duplex serial port sniffing cable - you can find the connection & explanation [here](https://www.lammertbies.nl/comm/cable/rs-232-spy-monitor)
+- Arduino & ESP online simulator & more [Wokwi.com](https://www.wokwi.com)
 
 # Links & Other projects
  - [vent-axia-remote-oled-pic](https://github.com/brianmarchant/vent-axia-remote-oled-pic) - @brianmarchant did some nice work on the custom firmware
