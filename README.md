@@ -221,7 +221,7 @@ void loop() {
 ```
 ## Documentation
 Thanks to [@alextrical](https://github.com/alextrical), we have following documents right from the manufacturer with approval to make them public:
- - Sentinel Kinetic [diagnostic display items description](/docs/sentinel_kinetic-BMS.pdf) {by Vent-Axia, 2014-04-08}
+ - Sentinel Kinetic [diagnostic display items description](/docs/sentinel_kinetic-Diagnostic_Display.pdf) {by Vent-Axia, 2014-04-08}
  - Sentinel Kinetic Range [BMS capabilities](/docs/sentinel_kinetic-BMS.pdf) {by Vent-Axia, 2011-07-01}
 
 ## To Do:
